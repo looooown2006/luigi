@@ -663,6 +663,99 @@ describe('JS-TEST-APP', () => {
         cy.get('[data-testid="settings-link"]').should('not.exist');
       });
     });
+
+    describe('Vega profile menu with grouped items', () => {
+      let newConfig;
+
+      beforeEach(() => {
+        newConfig = structuredClone(defaultLuigiConfig);
+        newConfig.auth = undefined;
+        newConfig.settings.profileType = 'vega';
+        newConfig.navigation.profile = {
+          logout: {
+            label: 'Sign Out',
+            icon: 'log'
+          },
+          staticUserInfoFn: () => ({
+            name: 'Test User',
+            initials: 'TU',
+            email: 'test@example.com'
+          }),
+          items: [
+            {
+              label: 'Account Settings',
+              icon: 'account',
+              testId: 'profile-group-account',
+              children: [
+                { label: 'Profile', icon: 'person-placeholder', link: '/home/one', testId: 'profile-child-profile' },
+                { label: 'Privacy', icon: 'locked', link: '/home/two', testId: 'profile-child-privacy' }
+              ]
+            },
+            { label: 'About', icon: 'hint', link: '/home/one', testId: 'profile-flat-about' }
+          ]
+        };
+      });
+
+      it('Should render group items with submenu arrow', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"]').should('exist');
+        cy.get('[data-testid="profile-group-account"] .fd-menu__addon-after--submenu').should('exist');
+      });
+
+      it('Should render flat items without submenu arrow', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-flat-about"]').should('exist');
+        cy.get('[data-testid="profile-flat-about"] .fd-menu__addon-after--submenu').should('not.exist');
+      });
+
+      it('Should expand group on click and show children', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').should('exist');
+        cy.get('[data-testid="profile-child-privacy"]').should('exist');
+      });
+
+      it('Should collapse group on second click', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').should('exist');
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').should('not.exist');
+      });
+
+      it('Should navigate when clicking a child item', () => {
+        cy.visitTestApp('/home/two', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').click();
+        cy.expectPathToBe('/home/one');
+      });
+
+      it('Should close submenu when clicking elsewhere in the menu', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').should('exist');
+        cy.get('.fd-user-menu__header').click();
+        cy.get('[data-testid="profile-child-profile"]').should('not.exist');
+      });
+
+      it('Should reset submenu state when profile menu is reopened', () => {
+        cy.visitTestApp('/home/one', newConfig);
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-group-account"] .fd-menu__link').click();
+        cy.get('[data-testid="profile-child-profile"]').should('exist');
+        // Close profile menu
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        // Reopen
+        cy.get('[data-testid="luigi-topnav-profile-btn"]').click();
+        cy.get('[data-testid="profile-child-profile"]').should('not.exist');
+      });
+    });
   });
 
   describe('First topNav node has no viewURL and empty children', () => {
