@@ -212,7 +212,13 @@
 {#if !isHidden}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="fd-popover__wrapper fd-user-menu__popover-wrapper" on:click={() => { expandedGroupIndex = null; }} on:keydown={handleMenuKeyDown}>
+  <div
+    class="fd-popover__wrapper fd-user-menu__popover-wrapper"
+    on:click={() => {
+      expandedGroupIndex = null;
+    }}
+    on:keydown={handleMenuKeyDown}
+  >
     <div class="fd-user-menu__body">
       {#if showUserInfo}
         <div class="fd-user-menu__header">
@@ -275,7 +281,12 @@
             {#each profileNav.items as profileItem, index}
               {#if profileItem.children && profileItem.children.length > 0}
                 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                <li class="fd-menu__item" role="presentation" data-testid={getTestId(profileItem)} on:click|stopPropagation>
+                <li
+                  class="fd-menu__item"
+                  role="presentation"
+                  data-testid={getTestId(profileItem)}
+                  on:click|stopPropagation
+                >
                   <span
                     class="fd-menu__link has-child"
                     class:is-expanded={expandedGroupIndex === index}
@@ -290,7 +301,7 @@
                     {#if profileItem.icon}
                       <span class="fd-menu__addon-before">
                         {#if hasOpenUIicon(profileItem)}
-                          <i class="{getSapIconStr(profileItem.icon)}" role="presentation" />
+                          <i class={getSapIconStr(profileItem.icon)} role="presentation" />
                         {:else}
                           <img
                             class="nav-icon"
@@ -305,7 +316,13 @@
                   </span>
                   {#if expandedGroupIndex === index}
                     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                    <ul class="fd-menu__sublist fd-menu__sublist--icons lui-profile-sublist" id="profile-group-{index}" aria-hidden="false" role="menu" on:keydown={handleSublistKeyDown}>
+                    <ul
+                      class="fd-menu__sublist fd-menu__sublist--icons lui-profile-sublist"
+                      id="profile-group-{index}"
+                      aria-hidden="false"
+                      role="menu"
+                      on:keydown={handleSublistKeyDown}
+                    >
                       {#each profileItem.children as childItem}
                         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
                         <li
@@ -332,7 +349,7 @@
                             {#if childItem.icon}
                               <span class="fd-menu__addon-before">
                                 {#if hasOpenUIicon(childItem)}
-                                  <i class="{getSapIconStr(childItem.icon)}" role="presentation" />
+                                  <i class={getSapIconStr(childItem.icon)} role="presentation" />
                                 {:else}
                                   <img
                                     class="nav-icon"

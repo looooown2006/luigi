@@ -40,9 +40,7 @@ describe('AuthorizationVegaProfileMenu', () => {
       const groupItem = {
         label: 'Tools',
         icon: 'action-settings',
-        children: [
-          { label: 'Settings', icon: 'settings', link: '/settings' }
-        ]
+        children: [{ label: 'Settings', icon: 'settings', link: '/settings' }]
       };
       const flatItem = { label: 'About', icon: 'hint', link: '/about' };
 
@@ -90,8 +88,8 @@ describe('AuthorizationVegaProfileMenu', () => {
         { label: 'Flat 2', link: '/f2' }
       ];
 
-      const groups = items.filter(i => i.children && i.children.length > 0);
-      const flatItems = items.filter(i => !i.children || i.children.length === 0);
+      const groups = items.filter((i) => i.children && i.children.length > 0);
+      const flatItems = items.filter((i) => !i.children || i.children.length === 0);
 
       expect(groups.length).to.equal(2);
       expect(flatItems.length).to.equal(2);
