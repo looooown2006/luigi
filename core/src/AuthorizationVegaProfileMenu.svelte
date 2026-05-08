@@ -435,6 +435,10 @@
     height: 2em;
   }
 
+  .fd-user-menu__header-container {
+    word-wrap: break-word;
+  }
+
   /* fixes for long User Name and role */
   .fd-user-menu__user-name,
   .fd-user-menu__user-role {
